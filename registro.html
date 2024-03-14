@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Datos</title>
+  <style>
+    /* Estilos opcionales para mejorar la apariencia */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Registro de Datos</h2>
+
+  <form id="crudForm">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required>
+    <label for="tipoDocumento">Tipo de documento:</label>
+    <select id="tipoDocumento" required>
+      <option value="CC">Cédula de ciudadanía</option>
+      <option value="CE">Cédula de extranjería</option>
+    </select>
+    <label for="numeroDocumento">Número de documento:</label>
+    <input type="text" id="numeroDocumento" required>
+    <label for="tipoCapacitacion">Tipo de Capacitación:</label>
+    <select id="tipoCapacitacion" onchange="mostrarOpcionesCapacitacion()" required>
+      <option value="Curso">Curso</option>
+      <option value="Diplomado">Diplomado</option>
+    </select>
+    <div id="opcionesCurso" style="display:none;">
+      <label for="curso">Curso:</label>
+      <select id="curso" required>
+        <option value="Auxiliar de tráfico vial y control de pmt">Auxiliar de tráfico vial y control de pmt</option>
+        <option value="Conducción segura de motocicletas">Conducción segura de motocicletas</option>
+        <option value="Conducción segura de vehículos livianos">Conducción segura de vehículos livianos</option>
+        <option value="Conducción segura de vehículos pesados">Conducción segura de vehículos pesados</option>
+        <option value="Conducción segura de vehículos 4 x 4">Conducción segura de vehículos 4 x 4</option>
+        <option value="Capacitación para el transporte de sustancias peligrosas">Capacitación para el transporte de sustancias peligrosas</option>
+        <option value="Capacitación para el transporte de cargas indivisibles, extrapesadas y extra dimensionada">Capacitación para el transporte de cargas indivisibles, extrapesadas y extra dimensionada</option>
+        <option value="Capacitación para la operación segura de montacargas ">Capacitación para la operación segura de montacargas </option>
+        <option value="Capacitación para la operación segura de grúas de remolque de vehículos">Capacitación para la operación segura de grúas de remolque de vehículos</option>
+        <option value="Formación y/o actualización para agentes de tránsito">Formación y/o actualización para agentes de tránsito</option>
+        <option value="Alistamiento para la acreditación en competencia laboral para el sector transporte">Alistamiento para la acreditación en competencia laboral para el sector transporte</option>
+
+        <!-- Agrega más opciones según sea necesario -->
+      </select>
+    </div>
+    <div id="opcionesDiplomado" style="display:none;">
+      <label for="diplomado">Diplomado:</label>
+      <select id="diplomado" required>
+        <option value="Diplomado nueva metodología pesv">Diplomado nueva metodología pesv</option>
+        <option value="Diplomado coordinador vial con énfasis en pesv">Diplomado coordinador vial con énfasis en pesv</option>
+        <!-- Agrega más opciones según sea necesario -->
+      </select>
+    </div>
+    <label for="ciudad">Ciudad:</label>
+    <input type="text" id="ciudad" required>
+    <label for="empresa">Empresa:</label>
+    <input type="text" id="empresa" required>
+    <label for="fechaCertificacion">Fecha de certificación:</label>
+    <input type="date" id="fechaCertificacion" required>
+    <label for="fechaVencimiento">Fecha de vencimiento:</label>
+    <input type="date" id="fechaVencimiento" required>
+    <label for="estado">Estado:</label>
+    <select id="estado" required>
+      <option value="Aprobado">Aprobado</option>
+      <option value="NoAprobado">No Aprobado</option>
+    </select>
+    <!-- ... (Resto del formulario) ... -->
+    <button type="button" id="guardarBtn" onclick="agregarEditarRegistro()">Agregar</button>
+    <button type="button" id="cancelarBtn" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+  </form>
+
+  <script>
+    // ... (Funciones JavaScript relevantes) ...
+
+    // Mostrar datos al cargar la página
+    // (Esta función se trasladará a datos.html)
+  </script>
+
+</body>
+</html>

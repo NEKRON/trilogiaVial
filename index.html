@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguridad Vial</title>
+  <style>
+    /* Estilos opcionales para mejorar la apariencia */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    /* Estilos para los estados */
+    .estadoAprobado {
+      background-color: #aaffaa; /* Verde */
+    }
+
+    .estadoNoAprobado {
+      background-color: #ffaaaa; /* Rojo */
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <h2>Seguridad Vial</h2>
+
+  <form id="crudForm">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required>
+    <label for="tipoDocumento">Tipo de documento:</label>
+    <select id="tipoDocumento" required>
+      <option value="CC">Cédula de ciudadanía</option>
+      <option value="CE">Cédula de extranjería</option>
+    </select>
+    <label for="numeroDocumento">Número de documento:</label>
+    <input type="text" id="numeroDocumento" required>
+    <label for="tipoCapacitacion">Tipo de Capacitación:</label>
+    <select id="tipoCapacitacion" onchange="mostrarOpcionesCapacitacion()" required>
+      <option value="Curso">Curso</option>
+      <option value="Diplomado">Diplomado</option>
+    </select>
+    <div id="opcionesCurso" style="display:none;">
+      <label for="curso">Curso:</label>
+      <select id="curso" required>
+        <option value="Auxiliar de tráfico vial y control de pmt">Auxiliar de tráfico vial y control de pmt</option>
+        <option value="Conducción segura de motocicletas">Conducción segura de motocicletas</option>
+        <option value="Conducción segura de vehículos livianos">Conducción segura de vehículos livianos</option>
+        <option value="Conducción segura de vehículos pesados">Conducción segura de vehículos pesados</option>
+        <option value="Conducción segura de vehículos 4 x 4">Conducción segura de vehículos 4 x 4</option>
+        <option value="Capacitación para el transporte de sustancias peligrosas">Capacitación para el transporte de sustancias peligrosas</option>
+        <option value="Capacitación para el transporte de cargas indivisibles, extrapesadas y extra dimensionada">Capacitación para el transporte de cargas indivisibles, extrapesadas y extra dimensionada</option>
+        <option value="Capacitación para la operación segura de montacargas ">Capacitación para la operación segura de montacargas </option>
+        <option value="Capacitación para la operación segura de grúas de remolque de vehículos">Capacitación para la operación segura de grúas de remolque de vehículos</option>
+        <option value="Formación y/o actualización para agentes de tránsito">Formación y/o actualización para agentes de tránsito</option>
+        <option value="Alistamiento para la acreditación en competencia laboral para el sector transporte">Alistamiento para la acreditación en competencia laboral para el sector transporte</option>
+
+        <!-- Agrega más opciones según sea necesario -->
+      </select>
+    </div>
+    <div id="opcionesDiplomado" style="display:none;">
+      <label for="diplomado">Diplomado:</label>
+      <select id="diplomado" required>
+        <option value="Diplomado nueva metodología pesv">Diplomado nueva metodología pesv</option>
+        <option value="Diplomado coordinador vial con énfasis en pesv">Diplomado coordinador vial con énfasis en pesv</option>
+        <!-- Agrega más opciones según sea necesario -->
+      </select>
+    </div>
+    <label for="ciudad">Ciudad:</label>
+    <input type="text" id="ciudad" required>
+    <label for="empresa">Empresa:</label>
+    <input type="text" id="empresa" required>
+    <label for="fechaCertificacion">Fecha de certificación:</label>
+    <input type="date" id="fechaCertificacion" required>
+    <label for="fechaVencimiento">Fecha de vencimiento:</label>
+    <input type="date" id="fechaVencimiento" required>
+    <label for="estado">Estado:</label>
+    <select id="estado" required>
+      <option value="Aprobado">Aprobado</option>
+      <option value="NoAprobado">No Aprobado</option>
+    </select>
+    <button type="button" id="guardarBtn" onclick="agregarEditarRegistro()">Agregar</button>
+    <button type="button" id="cancelarBtn" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+  </form>
+
+  <label for="busquedaNumeroDocumento">Buscar por número de documento:</label>
+  <input type="text" id="busquedaNumeroDocumento" oninput="buscarPorNumeroDocumento()">
+
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Tipo de Documento</th>
+        <th>Número de Documento</th>
+        <th>Tipo de Capacitación</th>
+        <th>Curso</th>
+        <th>Diplomado</th>
+        <th>Ciudad</th>
+        <th>Empresa</th>
+        <th>Fecha de Certificación</th>
+        <th>Fecha de Vencimiento</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaBody"></tbody>
+  </table>
+
+  <button type="button" id="exportarExcelBtn" onclick="exportarAExcel()">Exportar a Excel</button>
+
+  <script>
+    // Datos de ejemplo
+    const datos = [
+      { nombre: 'Juan', tipoDocumento: 'CC', numeroDocumento: '123456789', tipoCapacitacion: 'Curso', curso: 'Auxiliar de tráfico vial y control de pmt', ciudad: 'Bogotá', empresa: 'Empresa1', fechaCertificacion: '2022-01-01', fechaVencimiento: '2023-01-01', estado: 'Aprobado' },
+      { nombre: 'María', tipoDocumento: 'CE', numeroDocumento: '987654321', tipoCapacitacion: 'Diplomado', diplomado: 'Diplomado nueva metodología pesv', ciudad: 'Medellín', empresa: 'Empresa2', fechaCertificacion: '2022-02-15', fechaVencimiento: '2023-02-15', estado: 'NoAprobado' },
+      // Puedes agregar más datos aquí
+    ];
+
+    let indiceEdicion = -1;
+
+    // Función para mostrar los datos en la tabla
+    function mostrarDatos() {
+      const tablaBody = document.getElementById('tablaBody');
+      tablaBody.innerHTML = '';
+
+      datos.forEach((registro, index) => {
+        const fila = document.createElement('tr');
+
+        const celdaNombre = document.createElement('td');
+        celdaNombre.textContent = registro.nombre;
+
+        const celdaTipoDocumento = document.createElement('td');
+        celdaTipoDocumento.textContent = registro.tipoDocumento === 'CC' ? 'Cédula de ciudadanía' : 'Cédula de extranjería';
+
+        const celdaNumeroDocumento = document.createElement('td');
+        celdaNumeroDocumento.textContent = registro.numeroDocumento;
+
+        const celdaTipoCapacitacion = document.createElement('td');
+        celdaTipoCapacitacion.textContent = registro.tipoCapacitacion;
+
+        const celdaCurso = document.createElement('td');
+        celdaCurso.textContent = registro.curso || '-';
+
+        const celdaDiplomado = document.createElement('td');
+        celdaDiplomado.textContent = registro.diplomado || '-';
+
+        const celdaCiudad = document.createElement('td');
+        celdaCiudad.textContent = registro.ciudad;
+
+        const celdaEmpresa = document.createElement('td');
+        celdaEmpresa.textContent = registro.empresa;
+
+        const celdaFechaCertificacion = document.createElement('td');
+        celdaFechaCertificacion.textContent = registro.fechaCertificacion;
+
+        const celdaFechaVencimiento = document.createElement('td');
+        celdaFechaVencimiento.textContent = registro.fechaVencimiento;
+
+        const celdaEstado = document.createElement('td');
+        celdaEstado.textContent = registro.estado;
+        // Aplicar estilos según el estado
+        celdaEstado.classList.add(registro.estado === 'Aprobado' ? 'estadoAprobado' : 'estadoNoAprobado');
+
+        const celdaAcciones = document.createElement('td');
+
+        const botonEditar = document.createElement('button');
+        botonEditar.textContent = 'Editar';
+        botonEditar.addEventListener('click', () => editarRegistro(index));
+
+        const botonEliminar = document.createElement('button');
+        botonEliminar.textContent = 'Eliminar';
+        botonEliminar.addEventListener('click', () => eliminarRegistro(index));
+
+        celdaAcciones.appendChild(botonEditar);
+        celdaAcciones.appendChild(botonEliminar);
+
+        fila.appendChild(celdaNombre);
+        fila.appendChild(celdaTipoDocumento);
+        fila.appendChild(celdaNumeroDocumento);
+        fila.appendChild(celdaTipoCapacitacion);
+        fila.appendChild(celdaCurso);
+        fila.appendChild(celdaDiplomado);
+        fila.appendChild(celdaCiudad);
+        fila.appendChild(celdaEmpresa);
+        fila.appendChild(celdaFechaCertificacion);
+        fila.appendChild(celdaFechaVencimiento);
+        fila.appendChild(celdaEstado);
+        fila.appendChild(celdaAcciones);
+
+        tablaBody.appendChild(fila);
+      });
+    }
+
+    // Función para mostrar las opciones de capacitación según la elección
+    function mostrarOpcionesCapacitacion() {
+      const tipoCapacitacion = document.getElementById('tipoCapacitacion').value;
+      const opcionesCurso = document.getElementById('opcionesCurso');
+      const opcionesDiplomado = document.getElementById('opcionesDiplomado');
+
+      if (tipoCapacitacion === 'Curso') {
+        opcionesCurso.style.display = 'block';
+        opcionesDiplomado.style.display = 'none';
+      } else if (tipoCapacitacion === 'Diplomado') {
+        opcionesCurso.style.display = 'none';
+        opcionesDiplomado.style.display = 'block';
+      }
+    }
+
+    // Función para agregar o editar un registro
+    function agregarEditarRegistro() {
+      const nombre = document.getElementById('nombre').value;
+      const tipoDocumento = document.getElementById('tipoDocumento').value;
+      const numeroDocumento = document.getElementById('numeroDocumento').value;
+      const tipoCapacitacion = document.getElementById('tipoCapacitacion').value;
+      const curso = document.getElementById('curso').value;
+      const diplomado = document.getElementById('diplomado').value;
+      const ciudad = document.getElementById('ciudad').value;
+      const empresa = document.getElementById('empresa').value;
+      const fechaCertificacion = document.getElementById('fechaCertificacion').value;
+      const fechaVencimiento = document.getElementById('fechaVencimiento').value;
+      const estado = document.getElementById('estado').value;
+
+      // Validar que se ingresen datos
+      if (nombre && tipoDocumento && numeroDocumento && tipoCapacitacion && ciudad && empresa && fechaCertificacion && fechaVencimiento && estado) {
+        if (indiceEdicion === -1) {
+          // Agregar nuevo registro
+          const nuevoRegistro = { nombre, tipoDocumento, numeroDocumento, tipoCapacitacion, curso, diplomado, ciudad, empresa, fechaCertificacion, fechaVencimiento, estado };
+          datos.push(nuevoRegistro);
+        } else {
+          // Editar registro existente
+          datos[indiceEdicion].nombre = nombre;
+          datos[indiceEdicion].tipoDocumento = tipoDocumento;
+          datos[indiceEdicion].numeroDocumento = numeroDocumento;
+          datos[indiceEdicion].tipoCapacitacion = tipoCapacitacion;
+          datos[indiceEdicion].curso = curso;
+          datos[indiceEdicion].diplomado = diplomado;
+          datos[indiceEdicion].ciudad = ciudad;
+          datos[indiceEdicion].empresa = empresa;
+          datos[indiceEdicion].fechaCertificacion = fechaCertificacion;
+          datos[indiceEdicion].fechaVencimiento = fechaVencimiento;
+          datos[indiceEdicion].estado = estado;
+          indiceEdicion = -1; // Reiniciar el índice de edición
+        }
+
+        mostrarDatos();
+        limpiarFormulario();
+        mostrarBotonAgregar();
+      } else {
+        alert('Por favor, ingresa todos los campos.');
+      }
+    }
+
+    // Función para editar un registro
+    function editarRegistro(index) {
+      const registro = datos[index];
+      document.getElementById('nombre').value = registro.nombre;
+      document.getElementById('tipoDocumento').value = registro.tipoDocumento;
+      document.getElementById('numeroDocumento').value = registro.numeroDocumento;
+      document.getElementById('tipoCapacitacion').value = registro.tipoCapacitacion;
+      document.getElementById('curso').value = registro.curso;
+      document.getElementById('diplomado').value = registro.diplomado;
+      document.getElementById('ciudad').value = registro.ciudad;
+      document.getElementById('empresa').value = registro.empresa;
+      document.getElementById('fechaCertificacion').value = registro.fechaCertificacion;
+      document.getElementById('fechaVencimiento').value = registro.fechaVencimiento;
+      document.getElementById('estado').value = registro.estado;
+
+      // Mostrar u ocultar opciones según el tipo de capacitación
+      mostrarOpcionesCapacitacion();
+
+      // Cambiar el texto y el evento del botón
+      document.getElementById('guardarBtn').textContent = 'Guardar';
+      document.getElementById('guardarBtn').onclick = function () {
+        agregarEditarRegistro();
+      };
+
+      // Mostrar el botón de cancelar
+      document.getElementById('cancelarBtn').style.display = 'inline';
+
+      // Actualizar el índice de edición
+      indiceEdicion = index;
+    }
+
+    // Función para eliminar un registro
+    function eliminarRegistro(index) {
+      datos.splice(index, 1);
+      mostrarDatos();
+      mostrarBotonAgregar();
+    }
+
+    // Función para cancelar la edición
+    function cancelarEdicion() {
+      limpiarFormulario();
+      mostrarBotonAgregar();
+      indiceEdicion = -1;
+    }
+
+    // Función para limpiar el formulario
+    function limpiarFormulario() {
+      document.getElementById('crudForm').reset();
+    }
+
+    // Función para mostrar el botón de agregar y ocultar el de guardar
+    function mostrarBotonAgregar() {
+      document.getElementById('guardarBtn').textContent = 'Agregar';
+      document.getElementById('guardarBtn').onclick = function () {
+        agregarEditarRegistro();
+      };
+
+      // Ocultar el botón de cancelar
+      document.getElementById('cancelarBtn').style.display = 'none';
+    }
+
+    // Función para buscar por número de documento
+    function buscarPorNumeroDocumento() {
+      const numeroDocumentoBusqueda = document.getElementById('busquedaNumeroDocumento').value.trim();
+
+      if (numeroDocumentoBusqueda === '') {
+        mostrarDatos();
+        return;
+      }
+
+      const resultados = datos.filter(registro => registro.numeroDocumento === numeroDocumentoBusqueda);
+
+      const tablaBody = document.getElementById('tablaBody');
+      tablaBody.innerHTML = '';
+
+      resultados.forEach((registro, index) => {
+        const fila = document.createElement('tr');
+
+        const celdaNombre = document.createElement('td');
+        celdaNombre.textContent = registro.nombre;
+
+        const celdaTipoDocumento = document.createElement('td');
+        celdaTipoDocumento.textContent = registro.tipoDocumento === 'CC' ? 'Cédula de ciudadanía' : 'Cédula de extranjería';
+
+        const celdaNumeroDocumento = document.createElement('td');
+        celdaNumeroDocumento.textContent = registro.numeroDocumento;
+
+        const celdaTipoCapacitacion = document.createElement('td');
+        celdaTipoCapacitacion.textContent = registro.tipoCapacitacion;
+
+        const celdaCurso = document.createElement('td');
+        celdaCurso.textContent = registro.curso || '-';
+
+        const celdaDiplomado = document.createElement('td');
+        celdaDiplomado.textContent = registro.diplomado || '-';
+
+        const celdaCiudad = document.createElement('td');
+        celdaCiudad.textContent = registro.ciudad;
+
+        const celdaEmpresa = document.createElement('td');
+        celdaEmpresa.textContent = registro.empresa;
+
+        const celdaFechaCertificacion = document.createElement('td');
+        celdaFechaCertificacion.textContent = registro.fechaCertificacion;
+
+        const celdaFechaVencimiento = document.createElement('td');
+        celdaFechaVencimiento.textContent = registro.fechaVencimiento;
+
+        const celdaEstado = document.createElement('td');
+        celdaEstado.textContent = registro.estado;
+        // Aplicar estilos según el estado
+        celdaEstado.classList.add(registro.estado === 'Aprobado' ? 'estadoAprobado' : 'estadoNoAprobado');
+
+        const celdaAcciones = document.createElement('td');
+
+        const botonEditar = document.createElement('button');
+        botonEditar.textContent = 'Editar';
+        botonEditar.addEventListener('click', () => editarRegistro(index));
+
+        const botonEliminar = document.createElement('button');
+        botonEliminar.textContent = 'Eliminar';
+        botonEliminar.addEventListener('click', () => eliminarRegistro(index));
+
+        celdaAcciones.appendChild(botonEditar);
+        celdaAcciones.appendChild(botonEliminar);
+
+        fila.appendChild(celdaNombre);
+        fila.appendChild(celdaTipoDocumento);
+        fila.appendChild(celdaNumeroDocumento);
+        fila.appendChild(celdaTipoCapacitacion);
+        fila.appendChild(celdaCurso);
+        fila.appendChild(celdaDiplomado);
+        fila.appendChild(celdaCiudad);
+        fila.appendChild(celdaEmpresa);
+        fila.appendChild(celdaFechaCertificacion);
+        fila.appendChild(celdaFechaVencimiento);
+        fila.appendChild(celdaEstado);
+        fila.appendChild(celdaAcciones);
+
+        tablaBody.appendChild(fila);
+      });
+    }
+
+    // Mostrar datos al cargar la página
+    mostrarDatos();
+
+     // Función para exportar a Excel
+  function exportarAExcel() {
+    const datosExportar = datos.map(registro => ({
+      Nombre: registro.nombre,
+      'Tipo de Documento': registro.tipoDocumento === 'CC' ? 'Cédula de ciudadanía' : 'Cédula de extranjería',
+      'Número de Documento': registro.numeroDocumento,
+      'Tipo de Capacitación': registro.tipoCapacitacion,
+      Curso: registro.curso || '-',
+      Diplomado: registro.diplomado || '-',
+      Ciudad: registro.ciudad,
+      Empresa: registro.empresa,
+      'Fecha de Certificación': registro.fechaCertificacion,
+      'Fecha de Vencimiento': registro.fechaVencimiento,
+      Estado: registro.estado,
+    }));
+
+    const hojaExcel = XLSX.utils.json_to_sheet(datosExportar);
+    const libroExcel = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libroExcel, hojaExcel, 'Certificaciones');
+
+    // Guardar el archivo Excel
+    XLSX.writeFile(libroExcel, 'certificaciones.xlsx');
+  }
+
+  // Función para cargar desde Excel
+  function cargarDesdeExcel(event) {
+    const input = event.target;
+    const file = input.files[0];
+
+    if (file) {
+      const lector = new FileReader();
+
+      lector.onload = function (e) {
+        try {
+          const contenido = e.target.result;
+          const libroExcel = XLSX.read(contenido, { type: 'binary' });
+          const primeraHoja = libroExcel.SheetNames[0];
+          const datosExcel = XLSX.utils.sheet_to_json(libroExcel.Sheets[primeraHoja], { header: 1 });
+
+          // Eliminar la primera fila (encabezados) si es necesario
+          datosExcel.shift();
+
+          // Actualizar datos y mostrarlos
+          datos = datosExcel.map(row => ({
+            nombre: row[0],
+            tipoDocumento: row[1],
+            numeroDocumento: row[2],
+            tipoCapacitacion: row[3],
+            curso: row[4] || '-',
+            diplomado: row[5] || '-',
+            ciudad: row[6],
+            empresa: row[7],
+            fechaCertificacion: row[8],
+            fechaVencimiento: row[9],
+            estado: row[10],
+          }));
+
+          // Actualizar el almacenamiento local
+          actualizarLocalStorage();
+
+          // Mostrar los datos en la tabla
+          mostrarDatos();
+        } catch (error) {
+          console.error('Error al leer el archivo Excel:', error);
+          alert('Error al leer el archivo Excel. Por favor, asegúrate de que el formato sea correcto.');
+        }
+      };
+
+      lector.readAsBinaryString(file);
+    }
+  }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+
+</body>
+</html>
