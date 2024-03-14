@@ -1,0 +1,227 @@
+:root {
+
+}
+
+html {
+
+}
+
+body {
+    font-family: Calibri;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================== */
+/* GLOBALES */
+/* ================== */
+.container {
+    max-width: 120rem;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 1rem;
+    color: #ff8f00;
+    margin: 2rem 0;
+}
+
+@media (min-width: 780px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+.content-table {
+    max-width: 90%;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 2rem auto 0 auto;
+    overflow-x: scroll;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+#tabla tbody tr:nth-child(even) {
+    background-color: #f2f2f2; 
+}
+
+#tabla tbody tr:nth-child(odd) {
+    background-color: #ffffff; 
+}
+
+th, td {
+    width: auto;
+    padding: 1rem;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+form {
+    margin-top: 20px;
+}
+
+  /* Estilos para los estados */
+.estadoAprobado {
+    background-color: #aaffaa; /* Verde */
+    font-weight: bold;
+    color: green;
+}
+
+.estadoNoAprobado {
+    background-color: #ffaaaa; /* Rojo */
+    font-weight: bold;
+    color: rgb(80, 8, 8);
+}
+
+/* FORMULARIO */
+
+form {
+    width: 95%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+@media (min-width: 780px) {
+    form {
+        width: 90%;
+    }
+}
+
+@media (min-width: 1000px) {
+    form {
+        width: 70%;
+    }
+}
+
+.logoTitle {
+    display: flex;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+img {
+    width: 7rem;
+    height: 5rem;
+}
+
+.content-form {
+    display: block;
+    width: 100%;
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 780px) {
+    .content-form {
+        display: block;
+        width: 100%;
+        border-radius: 2rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+input, select {    
+    width: 100%;
+    height: 2.5rem;
+    border-radius: 2rem;
+    border: none;
+    padding: 0 1rem;
+    background-color: #f1f4f8;
+    outline: none;
+}
+
+input:focus {
+    outline: 2px solid orange;
+    transition: all .3s ease;
+}
+
+.campos {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    background-color: #ff8f00;
+    border: 1px solid #ff8f00;
+    cursor: pointer;
+    width: 15rem;
+    height: 2.5rem;
+    border-radius: 2rem;
+    color: #FFF;
+    font-weight: bolder;
+    transition: all .3s ease-in-out;
+}
+
+button:hover {
+    box-shadow: .5rem .5rem 1rem #ff91006c;
+    /* background-color: #FFF;
+    color: #ff8f00; */
+}
+
+/* CAMPO DE BUSQUEDA */
+.campo-busqueda {
+    width: 85%;
+    margin: 4rem auto 2rem auto; 
+    text-align: left;
+}
+
+@media (min-width: 600px) {
+    .campo-busqueda {
+        text-align: center;
+        width: 50%;
+    }
+}
+
+.barraBusqueda {
+    
+}
+
+/* ESTILOS TABLA */
+.fa-pencil, .fa-trash {
+    /* padding: 0 1rem; */
+    cursor: pointer;
+}
+
+.fa-pencil {
+    color: #ff8f00;
+    padding: .5rem;
+}
+
+.fa-trash {
+    padding: .5rem;
+}
+
+/* FOOTER */
+footer {
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2rem 0;
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+    gap: 2rem;
+}
+
+@media (min-width: 780px) {
+    footer {
+        flex-direction: row;
+    }
+}
